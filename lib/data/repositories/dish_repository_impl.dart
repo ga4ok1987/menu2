@@ -2,11 +2,11 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/dish.dart';
 import '../../domain/repositories/dish_repository.dart';
-import '../datasources/supabase_dish_source.dart';
+import '../datasources/dish_data_source.dart';
 
 @LazySingleton(as: DishRepository)
 class DishRepositoryImpl implements DishRepository {
-  final SupabaseDishSource source;
+  final DishDataSource source;
 
   DishRepositoryImpl(this.source);
 
