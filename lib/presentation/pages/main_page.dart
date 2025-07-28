@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu2/core/constants/app_colors.dart';
+import 'package:menu2/core/extension/units_localizer.dart';
 import 'package:menu2/presentation/widgets/app_drawer.dart';
 import 'package:menu2/presentation/widgets/dish_card.dart';
 
+import '../../core/constants/app_sizes.dart';
+import '../../core/locale/availabel_language_cubit.dart';
 import '../../core/locale/language_cubit.dart';
+import '../../domain/entities/language_entity.dart';
 import '../blocs/dish_bloc.dart';
 import '../blocs/info_bloc.dart';
 
@@ -14,7 +18,6 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       drawer: BlocBuilder<InfoBloc, InfoState>(
         builder: (context, state) {
           if (state is InfoLoaded) {
@@ -34,7 +37,7 @@ class MainPage extends StatelessWidget {
           SliverAppBar.large(
             pinned: true,
             expandedHeight: 300,
-            title: const Text("МЕНЮ"),
+            title: Text(context.units.menu),
             // показується при скролі
             flexibleSpace: FlexibleSpaceBar(
               background: BlocBuilder<InfoBloc, InfoState>(
@@ -64,9 +67,8 @@ class MainPage extends StatelessWidget {
                             state.info.name,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-
-                              color: Colors.white,
-                              fontSize: 46,
+                              color: AppColors.white,
+                              fontSize: AppTextSizes.title,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.5,
                               fontFamily: 'Serif',
@@ -74,7 +76,7 @@ class MainPage extends StatelessWidget {
                               shadows: [
                                 Shadow(
                                   blurRadius: 10.0,
-                                  color: Colors.black45,
+                                  color: AppColors.black,
                                   offset: Offset(1, 2),
                                 ),
                               ],
@@ -89,28 +91,56 @@ class MainPage extends StatelessWidget {
               ),
             ),
             actions: [
-              BlocBuilder<LanguageCubit, Locale>(
-                builder: (context, locale) {
-                  return DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      dropdownColor: Colors.white,
-                      value: locale.languageCode,
-                      icon: const Icon(Icons.language, color: Colors.white),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'uk',
-                          child: Text('Українська'),
+              BlocBuilder<AvailableLanguagesCubit, List<LanguageEntity>>(
+                builder: (context, languages) {
+                  return BlocBuilder<LanguageCubit, Locale>(
+                    builder: (context, locale) {
+                      return Padding(
+                        padding: AppPadding.onlyRight20,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: locale.languageCode,
+                            focusColor: Colors.transparent,
+                            icon: const SizedBox.shrink(), // прибирає стрілку
+                            alignment: Alignment.center,
+                            dropdownColor: Theme.of(context).colorScheme.surface,
+                            borderRadius: AppBorderRadius.all16,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.black,
+                              fontSize: AppTextSizes.medium,
+                            ),
+
+                            // прибирає сіре виділення
+                            selectedItemBuilder: (context) {
+                              return languages.map((lang) {
+                                return Center(child: Text(lang.name));
+                              }).toList();
+                            },
+
+                            items: languages.map(
+                                  (lang) {
+                                return DropdownMenuItem<String>(
+                                  value: lang.code,
+                                  child: Container(
+
+                                    decoration: const BoxDecoration(
+                                      color: Colors.transparent, // прозорий фон
+                                    ),
+                                    child: Center(child: Text(lang.name)),
+                                  ),
+                                );
+                              },
+                            ).toList(),
+
+                            onChanged: (langCode) {
+                              if (langCode != null) {
+                                context.read<LanguageCubit>().setLocale(Locale(langCode));
+                              }
+                            },
+                          ),
                         ),
-                        DropdownMenuItem(value: 'en', child: Text('English')),
-                      ],
-                      onChanged: (langCode) {
-                        if (langCode != null) {
-                          context.read<LanguageCubit>().setLocale(
-                            Locale(langCode),
-                          );
-                        }
-                      },
-                    ),
+                      );
+                    },
                   );
                 },
               ),
@@ -131,7 +161,7 @@ class MainPage extends StatelessWidget {
                 );
               } else {
                 return const SliverToBoxAdapter(
-                  child: Center(child: Text('Помилка завантаження')),
+                  child: SizedBox(),
                 );
               }
             },

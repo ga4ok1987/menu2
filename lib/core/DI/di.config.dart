@@ -12,6 +12,7 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:menu2/core/DI/di.dart' as _i809;
+import 'package:menu2/core/locale/availabel_language_cubit.dart' as _i528;
 import 'package:menu2/core/locale/language_cubit.dart' as _i994;
 import 'package:menu2/data/datasources/dish_remote_data_source.dart' as _i414;
 import 'package:menu2/data/datasources/info_remote_data_source.dart' as _i463;
@@ -40,6 +41,9 @@ extension GetItInjectableX on _i174.GetIt {
     final infoModule = _$InfoModule();
     gh.lazySingleton<_i454.SupabaseClient>(() => infoModule.supabaseClient);
     gh.lazySingleton<_i994.LanguageCubit>(() => _i994.LanguageCubit());
+    gh.lazySingleton<_i528.AvailableLanguagesCubit>(
+      () => _i528.AvailableLanguagesCubit(),
+    );
     gh.factory<_i591.GetLanguagesUseCase>(
       () => _i591.GetLanguagesUseCase(gh<_i661.LanguageRepository>()),
     );

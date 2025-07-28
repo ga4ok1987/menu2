@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:menu2/core/constants/app_sizes.dart';
+import 'package:menu2/core/extension/units_localizer.dart';
+import '../../core/constants/app_colors.dart';
 import '../../domain/entities/dish_entity.dart';
 
 class DishDialog extends StatelessWidget {
@@ -16,7 +19,7 @@ class DishDialog extends StatelessWidget {
           constraints: const BoxConstraints(maxHeight: 600),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppBorderRadius.all20,
           ),
           clipBehavior: Clip.hardEdge,
           child: Column(
@@ -32,7 +35,7 @@ class DishDialog extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppPadding.all16,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,25 +46,25 @@ class DishDialog extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      AppGaps.gap8,
                       if (dish.description != null)
                         Text(
                           dish.description!,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                      const SizedBox(height: 12),
+                      AppGaps.gap12,
                       Wrap(
                         spacing: 12,
                         runSpacing: 4,
                         children: [
                           if (dish.weight != null)
-                            Chip(label: Text('Вага: ${dish.weight}')),
-                          Chip(label: Text('Ціна: ${dish.price} грн')),
+                            Chip(label: Text('${context.units.weight}: ${dish.weight} ${context.units.grams}')),
+                          Chip(label: Text('${context.units.price}: ${dish.price} ${context.units.currency}')),
                           if (dish.likes != null)
                             Chip(label: Text('👍 ${dish.likes}')),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      AppGaps.gap12,
                       if (dish.tagNames.isNotEmpty)
                         Wrap(
                           spacing: 6,
@@ -69,7 +72,7 @@ class DishDialog extends StatelessWidget {
                               .map(
                                 (tag) => Chip(
                                   label: Text(tag),
-                                  backgroundColor: Colors.grey.withOpacity(0.2),
+                                  backgroundColor: AppColors.grey20,
                                 ),
                               )
                               .toList(),

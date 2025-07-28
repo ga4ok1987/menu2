@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:menu2/domain/entities/info_entity.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_sizes.dart';
 
 class AppDrawer extends StatelessWidget {
   final InfoEntity info;
@@ -18,15 +19,12 @@ class AppDrawer extends StatelessWidget {
             title: Center(
               child: Column(
                 children: [
+                  AppGaps.gap16,
                   Text(
-                    info.name,
-                    style: const TextStyle(color: AppColors.black, fontSize: 15),
-                  ),
-                  const Text(
-                    '"Файний Кременець"',
+                    '"${info.name}"',
                     style: TextStyle(
                       color: AppColors.black,
-                      fontSize: 18,
+                      fontSize: AppTextSizes.large,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -42,7 +40,7 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.location_on),
             title: Text(
               info.address,
-              style: const TextStyle(color: AppColors.black, fontSize: 12),
+              style: const TextStyle(color: AppColors.black, fontSize: AppTextSizes.small),
             ),
             trailing: const Icon(Icons.open_in_new),
             onTap: () {

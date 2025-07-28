@@ -10,7 +10,6 @@ class DishRemoteDataSource {
   DishRemoteDataSource(this.client);
 
   Future<List<DishModel>> getDishes(String lang) async {
-    print('Fetching dishes for lang $lang...');
 
     final response = await client
         .from('dishes')
@@ -28,11 +27,9 @@ class DishRemoteDataSource {
         ''')
         .eq('dish_translations.language_code', lang)
         .eq('types.type_translations.language_code', lang)
-        //.eq('dish_tags.tags.tag_translations.language_code', lang)
         .order('id');
 
     final data = response as List;
-    print('Datasource dishes count: ${data.length}');
     return data.map((json) => DishModel.fromJson(json)).toList();
 
   }

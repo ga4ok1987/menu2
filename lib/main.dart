@@ -12,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/DI/di.dart';
 import 'core/config/env.dart';
+import 'core/locale/availabel_language_cubit.dart';
 import 'core/router.dart';
 
 void main() async {
@@ -34,8 +35,12 @@ class AppWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<LanguageCubit>(
-      create: (_) => getIt<LanguageCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<LanguageCubit>(create: (_) => getIt<LanguageCubit>(),),
+        BlocProvider<AvailableLanguagesCubit>(create: (_) => getIt<AvailableLanguagesCubit>()..loadLanguages(),)
+      ],
+
       child: const _MultiBlocWrapper(),
     );
   }
@@ -85,9 +90,23 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Меню',
       theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        menuStyle: MenuStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        ),
       ),
+    ),
       locale: locale,
       supportedLocales: const [Locale('uk'), Locale('en')],
       builder: (context, child) => ResponsiveBreakpoints.builder(

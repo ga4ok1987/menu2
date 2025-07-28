@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:menu2/core/extension/units_localizer.dart';
 
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_sizes.dart';
 import '../../domain/entities/dish_entity.dart';
-import 'dish_dialog.dart'; // створи або заміни на свій
+import 'dish_dialog.dart';
 
 class DishCard extends StatelessWidget {
   final DishEntity dish;
@@ -28,13 +31,13 @@ class DishCard extends StatelessWidget {
         );
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: AppPadding.hor16ver8,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppBorderRadius.all16,
           boxShadow: const [
             BoxShadow(
-              color: Colors.black12,
+              color: AppColors.black,
               blurRadius: 6,
               offset: Offset(0, 3),
             ),
@@ -46,12 +49,9 @@ class DishCard extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: AppPadding.all8,
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                  ),
+                  borderRadius: AppBorderRadius.top16bot16,
                   child: Hero(
                     tag: 'dish_${dish.id}',
                     child: Image.network(
@@ -59,9 +59,7 @@ class DishCard extends StatelessWidget {
 
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                        width: 110,
-                        height: 110,
-                        color: Colors.grey[300],
+                        color: AppColors.grey30,
                         child: const Icon(Icons.image, size: 40),
                       ),
                     ),
@@ -72,7 +70,7 @@ class DishCard extends StatelessWidget {
             Expanded(
               flex: 4,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: AppPadding.all12,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -84,31 +82,31 @@ class DishCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    AppGaps.gap4,
                     Text(
                       dish.description ?? '',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[700],
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.grey70),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    AppGaps.gap8,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${dish.price.toStringAsFixed(2)} ₴',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          '${dish.price.toStringAsFixed(2)} ${context.units.currency}',
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         Text(
-                          '${dish.weight} г',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
+                          '${dish.weight} ${context.units.grams}',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.grey70),
                         ),
                       ],
                     ),
