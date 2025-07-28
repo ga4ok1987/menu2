@@ -1,12 +1,14 @@
 import 'package:injectable/injectable.dart';
 
-import '../entities/dish.dart';
+import '../entities/dish_entity.dart';
 import '../repositories/dish_repository.dart';
-
 @lazySingleton
-class GetDishes {
+class FetchDishesUseCase {
   final DishRepository repository;
-  GetDishes(this.repository);
 
-Future<List<Dish>> call() => repository.getDishes();
+  FetchDishesUseCase(this.repository);
+
+  Future<List<DishEntity>> call(String langCode) {
+    return repository.fetchDishes(langCode);
+  }
 }

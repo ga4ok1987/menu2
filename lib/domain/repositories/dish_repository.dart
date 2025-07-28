@@ -1,5 +1,5 @@
-import '../entities/dish.dart';
+import '../entities/dish_entity.dart';
 
 abstract class DishRepository {
-  Future<List<Dish>> getDishes();
+  Future<List<DishEntity>> fetchDishes(String languageCode);
 }
