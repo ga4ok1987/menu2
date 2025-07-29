@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../domain/entities/language_entity.dart';
-
+@lazySingleton
 class AvailableLanguagesCubit extends Cubit<List<LanguageEntity>> {
   AvailableLanguagesCubit() : super([]);
 

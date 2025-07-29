@@ -18,10 +18,8 @@ class DishRepositoryImpl implements DishRepository {
 
   @override
   Future<List<DishEntity>> fetchDishes(String languageCode) async {
-    print('fetchDishes called with lang: $languageCode');
     try {
       final models = await datasource.getDishes(languageCode);
-      print('Models count: ${models.length}');
       return models.map((m) => m.toEntity(languageCode)).toList();
     } catch (e, stack) {
       print('❌ Error in fetchDishes: $e');

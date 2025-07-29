@@ -25,8 +25,6 @@ class DishBloc extends Bloc<DishEvent, DishState> {
       final dishes = await repository.fetchDishes(event.lang);
       emit(DishLoaded(dishes));
     } catch (e) {
-      print(e.toString());
-
       emit(DishError(e.toString()));
     }
   }

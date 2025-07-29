@@ -20,7 +20,11 @@ class DishRemoteDataSource {
           weight,
           likes,
           dish_translations!inner(language_code,name,description),
-          types(type_translations(name, language_code)),
+          types(
+        id,
+        code,
+        type_translations(name, language_code)
+      ),
           dish_tags(
             tags(tag_translations!inner(language_code,name))
           )

@@ -15,9 +15,13 @@ abstract class DishModel with _$DishModel {
     required double price,
     String? weight,
     int? likes,
-    @JsonKey(name: 'dish_translations') @Default([]) List<DishTranslationModel> translations,
-    @JsonKey(name: 'types') TypeTranslationModel? type,
-    @JsonKey(name: 'dish_tags') @Default(<TagWrapperModel>[]) List<TagWrapperModel> tags,
+    @JsonKey(name: 'dish_translations')
+    @Default([])
+    List<DishTranslationModel> translations,
+    @JsonKey(name: 'types') TypeModel? type,
+    @JsonKey(name: 'dish_tags')
+    @Default(<TagWrapperModel>[])
+    List<TagWrapperModel> tags,
   }) = _DishModel;
 
   factory DishModel.fromJson(Map<String, dynamic> json) =>
@@ -28,7 +32,7 @@ abstract class DishModel with _$DishModel {
 abstract class DishTranslationModel with _$DishTranslationModel {
   const factory DishTranslationModel({
     required String language_code,
-    String? name,
+    required String name,
     String? description,
   }) = _DishTranslationModel;
 
@@ -38,13 +42,9 @@ abstract class DishTranslationModel with _$DishTranslationModel {
 
 extension DishModelX on DishModel {
   DishEntity toEntity(String lang) {
-    print('hui');
     final translation = translations.firstWhere(
-      (t) => t.language_code == lang,
+          (t) => t.language_code == lang,
       orElse: () => translations.first,
-    );
-    print(
-      'Translation: ${translation.language_code}, name: ${translation.name}',
     );
 
     return DishEntity(
@@ -55,7 +55,7 @@ extension DishModelX on DishModel {
       likes: likes,
       name: translation.name,
       description: translation.description,
-      typeName: type?.name,
+      typeName: type?.getNameForLang(lang),
       tagNames: tags
           .map((tag) => tag.tags?.getNameForLang(lang))
           .whereType<String>()
