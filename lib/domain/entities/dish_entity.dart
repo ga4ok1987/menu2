@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:menu2/domain/entities/type_entity.dart';
 
 class DishEntity extends Equatable {
   final int id;
@@ -9,7 +10,7 @@ class DishEntity extends Equatable {
 
   final String? name;
   final String? description;
-  final String? typeName;
+  final TypeEntity? typeName;
   final List<String> tagNames;
 
   const DishEntity({

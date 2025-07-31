@@ -18,15 +18,19 @@ import 'package:menu2/data/datasources/dish_remote_data_source.dart' as _i414;
 import 'package:menu2/data/datasources/info_remote_data_source.dart' as _i463;
 import 'package:menu2/data/datasources/language_remote_data_source.dart'
     as _i351;
+import 'package:menu2/data/datasources/type_remote_data_source.dart' as _i298;
 import 'package:menu2/data/repositories/dish_repository_impl.dart' as _i979;
 import 'package:menu2/data/repositories/info_repository_impl.dart' as _i980;
 import 'package:menu2/data/repositories/language_repository_impl.dart' as _i783;
+import 'package:menu2/data/repositories/type_repository_impl.dart' as _i697;
 import 'package:menu2/domain/repositories/dish_repository.dart' as _i551;
 import 'package:menu2/domain/repositories/info_repository.dart' as _i915;
 import 'package:menu2/domain/repositories/language_repository.dart' as _i661;
+import 'package:menu2/domain/repositories/type_repository.dart' as _i721;
 import 'package:menu2/domain/usecases/get_dishes.dart' as _i892;
 import 'package:menu2/domain/usecases/get_info.dart' as _i406;
 import 'package:menu2/domain/usecases/get_languages.dart' as _i591;
+import 'package:menu2/domain/usecases/get_types.dart' as _i722;
 import 'package:menu2/presentation/blocs/dish_bloc.dart' as _i484;
 import 'package:menu2/presentation/blocs/info_bloc.dart' as _i871;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
@@ -44,7 +48,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i528.AvailableLanguagesCubit>(
       () => _i528.AvailableLanguagesCubit(),
     );
-    gh.factory<_i591.GetLanguagesUseCase>(
+    gh.lazySingleton<_i591.GetLanguagesUseCase>(
       () => _i591.GetLanguagesUseCase(gh<_i661.LanguageRepository>()),
     );
     gh.lazySingleton<_i463.InfoRemoteDataSource>(
@@ -56,8 +60,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i414.DishRemoteDataSource>(
       () => _i414.DishRemoteDataSource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i298.TypeRemoteDatasource>(
+      () => _i298.TypeRemoteDatasource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i783.LanguageRepositoryImpl>(
       () => _i783.LanguageRepositoryImpl(gh<_i351.LanguageRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i721.TypeRepository>(
+      () => _i697.TypeRepositoryImpl(gh<_i298.TypeRemoteDatasource>()),
     );
     gh.lazySingleton<_i551.DishRepository>(
       () => _i979.DishRepositoryImpl(gh<_i414.DishRemoteDataSource>()),
@@ -65,11 +75,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i915.InfoRepository>(
       () => _i980.InfoRepositoryImpl(gh<_i463.InfoRemoteDataSource>()),
     );
-    gh.lazySingleton<_i892.FetchDishesUseCase>(
-      () => _i892.FetchDishesUseCase(gh<_i551.DishRepository>()),
+    gh.factory<_i722.GetTypesUseCase>(
+      () => _i722.GetTypesUseCase(gh<_i721.TypeRepository>()),
+    );
+    gh.lazySingleton<_i892.GetDishesUseCase>(
+      () => _i892.GetDishesUseCase(gh<_i551.DishRepository>()),
     );
     gh.factory<_i484.DishBloc>(
-      () => _i484.DishBloc(gh<_i551.DishRepository>()),
+      () => _i484.DishBloc(
+        gh<_i892.GetDishesUseCase>(),
+        gh<_i722.GetTypesUseCase>(),
+      ),
     );
     gh.factory<_i871.InfoBloc>(
       () => _i871.InfoBloc(gh<_i915.InfoRepository>()),

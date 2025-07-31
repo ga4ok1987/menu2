@@ -33,7 +33,7 @@ extension TypeModelX on TypeModel {
           (t) => t.language_code == lang,
       orElse: () => translations.first,
     ).name;
-    return TypeEntity(id: id, code: code, name: name??'');
+    return TypeEntity(id: id, name: name??'');
   }
 
   String? getNameForLang(String lang) {

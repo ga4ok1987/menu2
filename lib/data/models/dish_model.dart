@@ -55,7 +55,7 @@ extension DishModelX on DishModel {
       likes: likes,
       name: translation.name,
       description: translation.description,
-      typeName: type?.getNameForLang(lang),
+      typeName: type?.toEntity(lang),
       tagNames: tags
           .map((tag) => tag.tags?.getNameForLang(lang))
           .whereType<String>()

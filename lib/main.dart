@@ -22,10 +22,7 @@ void main() async {
         ? HydratedStorageDirectory.web
         : HydratedStorageDirectory((await getTemporaryDirectory()).path),
   );
-  await Supabase.initialize(
-    url: Env.supabaseUrl,
-    anonKey: Env.supabaseKey,
-  );
+  await Supabase.initialize(url: Env.supabaseUrl, anonKey: Env.supabaseKey);
   await configureDependencies();
   runApp(const AppWrapper());
 }
@@ -37,8 +34,10 @@ class AppWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<LanguageCubit>(create: (_) => getIt<LanguageCubit>(),),
-        BlocProvider<AvailableLanguagesCubit>(create: (_) => getIt<AvailableLanguagesCubit>()..loadLanguages(),)
+        BlocProvider<LanguageCubit>(create: (_) => getIt<LanguageCubit>()),
+        BlocProvider<AvailableLanguagesCubit>(
+          create: (_) => getIt<AvailableLanguagesCubit>()..loadLanguages(),
+        ),
       ],
 
       child: const _MultiBlocWrapper(),
@@ -61,14 +60,18 @@ class _MultiBlocWrapper extends StatelessWidget {
       child: Builder(
         builder: (context) {
           // 🔥 Ініціалізуємо одразу після побудови
-          context.read<DishBloc>().add(LoadDishesEvent(locale.languageCode));
+          context.read<DishBloc>().add(
+            DishEvent.fetchAll(lang: locale.languageCode),
+          );
           context.read<InfoBloc>().add(LoadInfoEvent(locale.languageCode));
 
           return BlocListener<LanguageCubit, Locale>(
             listenWhen: (previous, current) =>
-            previous.languageCode != current.languageCode,
+                previous.languageCode != current.languageCode,
             listener: (context, locale) {
-              context.read<DishBloc>().add(LoadDishesEvent(locale.languageCode));
+              context.read<DishBloc>().add(
+                DishEvent.fetchAll(lang: locale.languageCode),
+              );
               context.read<InfoBloc>().add(LoadInfoEvent(locale.languageCode));
             },
             child: const MyApp(),
@@ -90,23 +93,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Меню',
       theme: ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      dropdownMenuTheme: DropdownMenuThemeData(
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        dropdownMenuTheme: DropdownMenuThemeData(
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
           ),
-        ),
-        menuStyle: MenuStyle(
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+          menuStyle: MenuStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
           ),
         ),
       ),
-    ),
       locale: locale,
       supportedLocales: const [Locale('uk'), Locale('en')],
       builder: (context, child) => ResponsiveBreakpoints.builder(

@@ -17,7 +17,7 @@ class DishRepositoryImpl implements DishRepository {
 
 
   @override
-  Future<List<DishEntity>> fetchDishes(String languageCode) async {
+  Future<List<DishEntity>> getDishes(String languageCode) async {
     try {
       final models = await datasource.getDishes(languageCode);
       return models.map((m) => m.toEntity(languageCode)).toList();

@@ -12,8 +12,28 @@ import '../../domain/entities/language_entity.dart';
 import '../blocs/dish_bloc.dart';
 import '../blocs/info_bloc.dart';
 
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+class DishesPage extends StatefulWidget {
+  const DishesPage({super.key});
+
+  @override
+  State<DishesPage> createState() => _DishesPageState();
+}
+
+class _DishesPageState extends State<DishesPage> {
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +52,12 @@ class MainPage extends StatelessWidget {
         },
       ),
       backgroundColor: AppColors.white,
-      body: CustomScrollView(
-        slivers: [
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar.large(
             pinned: true,
             expandedHeight: 300,
             title: Text(context.units.menu),
-            // показується при скролі
             flexibleSpace: FlexibleSpaceBar(
               background: BlocBuilder<InfoBloc, InfoState>(
                 builder: (context, state) {
@@ -46,22 +65,17 @@ class MainPage extends StatelessWidget {
                     return Stack(
                       fit: StackFit.expand,
                       children: [
-                        // Зображення банера
                         ClipRect(
                           child: Align(
                             alignment: Alignment.topCenter,
-
                             child: Image.network(
                               state.info.imageUrl,
                               fit: BoxFit.cover,
                               width: double.infinity,
-
                               alignment: Alignment.topCenter,
                             ),
                           ),
                         ),
-
-                        // Назва ресторану в центрі
                         Center(
                           child: Text(
                             state.info.name,
@@ -72,7 +86,6 @@ class MainPage extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.5,
                               fontFamily: 'Serif',
-                              // або інший бажаний шрифт
                               shadows: [
                                 Shadow(
                                   blurRadius: 10.0,
@@ -101,40 +114,33 @@ class MainPage extends StatelessWidget {
                           child: DropdownButton<String>(
                             value: locale.languageCode,
                             focusColor: Colors.transparent,
-                            icon: const SizedBox.shrink(), // прибирає стрілку
+                            icon: const SizedBox.shrink(),
                             alignment: Alignment.center,
-                            dropdownColor: Theme.of(context).colorScheme.surface,
+                            dropdownColor: Theme.of(
+                              context,
+                            ).colorScheme.surface,
                             borderRadius: AppBorderRadius.all16,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppColors.black,
-                              fontSize: AppTextSizes.medium,
-                            ),
-
-                            // прибирає сіре виділення
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: AppColors.black,
+                                  fontSize: AppTextSizes.medium,
+                                ),
                             selectedItemBuilder: (context) {
                               return languages.map((lang) {
                                 return Center(child: Text(lang.name));
                               }).toList();
                             },
-
-                            items: languages.map(
-                                  (lang) {
-                                return DropdownMenuItem<String>(
-                                  value: lang.code,
-                                  child: Container(
-
-                                    decoration: const BoxDecoration(
-                                      color: Colors.transparent, // прозорий фон
-                                    ),
-                                    child: Center(child: Text(lang.name)),
-                                  ),
-                                );
-                              },
-                            ).toList(),
-
+                            items: languages.map((lang) {
+                              return DropdownMenuItem<String>(
+                                value: lang.code,
+                                child: Center(child: Text(lang.name)),
+                              );
+                            }).toList(),
                             onChanged: (langCode) {
                               if (langCode != null) {
-                                context.read<LanguageCubit>().setLocale(Locale(langCode));
+                                context.read<LanguageCubit>().setLocale(
+                                  Locale(langCode),
+                                );
                               }
                             },
                           ),
@@ -146,27 +152,77 @@ class MainPage extends StatelessWidget {
               ),
             ],
           ),
-          BlocBuilder<DishBloc, DishState>(
-            builder: (context, state) {
-              if (state is DishLoading) {
-                return const SliverToBoxAdapter(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              } else if (state is DishLoaded) {
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final dish = state.dishes[index];
-                    return DishCard(dish: dish);
-                  }, childCount: state.dishes.length),
-                );
-              } else {
-                return const SliverToBoxAdapter(
-                  child: SizedBox(),
-                );
-              }
-            },
-          ),
         ],
+        body: BlocBuilder<DishBloc, DishState>(
+          builder: (context, state) {
+            if (state is DishLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is DishLoaded) {
+              final types = state.types;
+              final dishesByType = state.groupedDishes;
+
+              return Column(
+                children: [
+                  AppGaps.gap8,
+                  SizedBox(
+                    height: 48,
+                    child: ListView.separated(
+                      padding: AppPadding.horizontal8,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: types.length,
+                      separatorBuilder: (_, __) => AppGaps.gap8,
+                      itemBuilder: (context, index) {
+                        final isSelected = state.selectedTypeIndex == index;
+                        return ChoiceChip(
+                          label: Text(types[index].name),
+                          selected: isSelected,
+                          onSelected: (_) {
+                            context.read<DishBloc>().add(
+                              DishEvent.changeSelectedType(index),
+                            );
+                            _pageController.animateToPage(
+                              index,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        context.read<DishBloc>().add(
+                          DishEvent.changeSelectedType(index),
+                        );
+                      },
+                      itemCount: types.length,
+                      itemBuilder: (context, index) {
+                        final type = types[index];
+                        final dishes = dishesByType[type.id] ?? [];
+
+                        return ListView.builder(
+                          key: PageStorageKey('list_view_${type.id}'),
+                          primary: false,
+                          padding: AppPadding.all16,
+                          itemCount: dishes.length,
+                          itemBuilder: (context, i) {
+                            final dish = dishes[i];
+                            return DishCard(dish: dish);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
       ),
     );
   }

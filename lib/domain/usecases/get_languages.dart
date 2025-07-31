@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../data/models/language_model.dart';
 import '../repositories/language_repository.dart';
 
-@injectable
+@lazySingleton
 class GetLanguagesUseCase {
   final LanguageRepository repo;
 
