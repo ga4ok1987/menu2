@@ -47,20 +47,23 @@ class DishCard extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Padding(
                 padding: AppPadding.all8,
                 child: ClipRRect(
                   borderRadius: AppBorderRadius.top16bot16,
-                  child: Hero(
-                    tag: 'dish_${dish.id}',
-                    child: Image.network(
-                      dish.imageUrl ?? '',
+                  child: AspectRatio(
+                    aspectRatio: 5/4,
+                    child: Hero(
+                      tag: 'dish_${dish.id}',
+                      child: Image.network(
+                        dish.imageUrl ?? '',
 
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: AppColors.grey30,
-                        child: const Icon(Icons.image, size: 40),
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: AppColors.grey30,
+                          child: const Icon(Icons.image, size: 40),
+                        ),
                       ),
                     ),
                   ),
