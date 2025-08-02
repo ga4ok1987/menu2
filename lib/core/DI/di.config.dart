@@ -44,12 +44,15 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final infoModule = _$InfoModule();
     gh.lazySingleton<_i454.SupabaseClient>(() => infoModule.supabaseClient);
-    gh.lazySingleton<_i994.LanguageCubit>(() => _i994.LanguageCubit());
     gh.lazySingleton<_i528.AvailableLanguagesCubit>(
       () => _i528.AvailableLanguagesCubit(),
     );
+    gh.lazySingleton<_i994.LanguageCubit>(() => _i994.LanguageCubit());
     gh.lazySingleton<_i591.GetLanguagesUseCase>(
       () => _i591.GetLanguagesUseCase(gh<_i661.LanguageRepository>()),
+    );
+    gh.lazySingleton<_i298.TypeRemoteDatasource>(
+      () => _i298.TypeRemoteDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i463.InfoRemoteDataSource>(
       () => _i463.InfoRemoteDataSource(gh<_i454.SupabaseClient>()),
@@ -59,9 +62,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i414.DishRemoteDataSource>(
       () => _i414.DishRemoteDataSource(gh<_i454.SupabaseClient>()),
-    );
-    gh.lazySingleton<_i298.TypeRemoteDatasource>(
-      () => _i298.TypeRemoteDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i783.LanguageRepositoryImpl>(
       () => _i783.LanguageRepositoryImpl(gh<_i351.LanguageRemoteDataSource>()),

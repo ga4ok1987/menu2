@@ -77,7 +77,7 @@ class DishCard extends StatelessWidget {
                     Text(
                       dish.name ?? '',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w800,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -87,7 +87,7 @@ class DishCard extends StatelessWidget {
                       dish.description ?? '',
                       style: Theme.of(
                         context,
-                      ).textTheme.bodyMedium?.copyWith(color: AppColors.grey70),
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.black),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -106,7 +106,7 @@ class DishCard extends StatelessWidget {
                         Text(
                           '${dish.weight} ${context.units.grams}',
                           style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColors.grey70),
+                              ?.copyWith(color: AppColors.grey),
                         ),
                       ],
                     ),
